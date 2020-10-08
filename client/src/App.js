@@ -1,26 +1,100 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+  import React, { Component } from 'react'
+import { Link, Route, Router, Switch } from 'react-router-dom'
+import { Grid, Menu, Segment } from 'semantic-ui-react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Auth from './auth/Auth'
+import EditDiaryPost  from './components/EditDiaryPost'
+import Login  from './components/Login'
+import NotFound from './components/NotFound'
+import DiaryPosts from './components/DiaryPosts';
+
+
+class App extends Component {
+
+ 
+  
+  handleLogin = () => {
+    this.props.auth.login();
+  }
+
+  handleLogout = () => {
+    this.props.auth.logout();
+  }
+
+  render() {
+    return (
+      <div>
+        <Segment style={{ padding: '8em 0em' }} vertical>
+          <Grid container stackable verticalAlign="middle">
+            <Grid.Row>
+              <Grid.Column width={16}>
+                <Router history={this.props.history}>
+                  {this.generateMenu()}
+                  {this.generateCurrentPage()}
+                </Router>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Segment>
+      </div>
+    )
+  }
+
+  generateMenu() {
+    return (
+      <Menu>
+        <Menu.Item name="home">
+          <Link to="/">Home</Link>
+        </Menu.Item>
+
+        <Menu.Menu position="right">{this.logInLogOutButton()}</Menu.Menu>
+      </Menu>
+    )
+  }
+
+  logInLogOutButton() {
+    if (this.props.auth.isAuthenticated()) {
+      return (
+        <Menu.Item name="logout" onClick={this.handleLogout}>
+          Log Out
+        </Menu.Item>
+      )
+    } else {
+      return (
+        <Menu.Item name="login" onClick={this.handleLogin}>
+          Log In
+        </Menu.Item>
+      )
+    }
+  }
+
+  generateCurrentPage() {
+    if (!this.props.auth.isAuthenticated()) {
+      return <Login auth={this.props.auth} />
+    }
+
+    return (
+      <Switch>
+        <Route
+          path="/"
+          exact
+          render={props => {
+            return <DiaryPosts {...props} auth={this.props.auth} />
+          }}
+        />
+
+        <Route
+          path="/diary/:diaryPostId/edit"
+          exact
+          render={props => {
+            return <EditDiaryPost {...props} auth={this.props.auth} />
+          }}
+        />
+
+        {/* <Route component={NotFound} /> */}
+      </Switch>
+    )
+  }
 }
 
 export default App;
