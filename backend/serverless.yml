@@ -1,5 +1,5 @@
 service:
-  name: diary-post-app
+  name: diary-app
 
 plugins:
   - serverless-webpack
@@ -16,7 +16,7 @@ provider:
   environment:
     DIARY_TABLE: Diary-${self:provider.stage}
     DIARY_POST_BY_USER_INDEX: DiaryPostByUserIndex
-    ATTACHMENTS_S3_BUCKET: serverless-s3-attachments-${self:provider.stage}
+    ATTACHMENTS_S3_BUCKET: diary-serverless-s3-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
     JWKS_URL: https://dev-lx46p2a3.us.auth0.com/.well-known/jwks.json
   
@@ -45,7 +45,7 @@ functions:
     handler: src/lambda/auth/auth0Authorizer.handler
 
   GetDiaryPosts:
-    handler: src/lambda/http/setDiaryPosts.handler
+    handler: src/lambda/http/getDiaryPosts.handler
     events:
       - http:
           method: get
@@ -225,7 +225,7 @@ resources:
         RestApiId:
           Ref: ApiGatewayRestApi
     
-    TodosTable:
+    DiaryTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
