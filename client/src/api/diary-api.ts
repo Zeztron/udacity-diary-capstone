@@ -1,7 +1,10 @@
-import { apiEndpoint } from '../config';
-import axios from 'axios';
+import { apiEndpoint } from '../config'
+import { DiaryPost } from '../types/DiaryPost';
+import { CreateDiaryPostRequest } from '../types/CreateDiaryPostRequest';
+import axios from 'axios'
+import { UpdateDiaryPostRequest } from '../types/UpdateDiaryPostRequest';
 
-export async function getDiaryPosts(idToken) {
+export async function getDiaryPosts(idToken: string): Promise<DiaryPost[]> {
   
 
   const response = await axios.get(`${apiEndpoint}/diary`, {
@@ -14,7 +17,7 @@ export async function getDiaryPosts(idToken) {
   return response.data.items
 }
 
-export async function createDiaryPost(idToken, newDiaryPost) {
+export async function createDiaryPost(idToken: string, newDiaryPost: CreateDiaryPostRequest): Promise<DiaryPost> {
   const response = await axios.post(`${apiEndpoint}/diary`,  JSON.stringify(newDiaryPost), {
     headers: {
       'Content-Type': 'application/json',
@@ -24,7 +27,7 @@ export async function createDiaryPost(idToken, newDiaryPost) {
   return response.data.item;
 }
 
-export async function patchDiaryPost(idToken, diaryPostId, updatedDiaryPost) {
+export async function patchDiaryPost(idToken: string, diaryPostId: string, updatedDiaryPost: UpdateDiaryPostRequest): Promise<void> {
   await axios.patch(`${apiEndpoint}/diary/${diaryPostId}`, JSON.stringify(updatedDiaryPost), {
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +36,7 @@ export async function patchDiaryPost(idToken, diaryPostId, updatedDiaryPost) {
   });
 };
 
-export async function deleteDiaryPost(idToken, diaryPostId) {
+export async function deleteDiaryPost(idToken: string, diaryPostId: string): Promise<void> {
   await axios.delete(`${apiEndpoint}/diary/${diaryPostId}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -42,7 +45,7 @@ export async function deleteDiaryPost(idToken, diaryPostId) {
   });
 };
 
-export async function getUploadUrl(idToken, diaryPostId) {
+export async function getUploadUrl(idToken: string, diaryPostId: string): Promise<string> {
   const response = await axios.post(`${apiEndpoint}/diary/${diaryPostId}/attachment`, '', {
     headers: {
       'Content-Type': 'application/json',
@@ -52,6 +55,6 @@ export async function getUploadUrl(idToken, diaryPostId) {
   return response.data.uploadUrl
 }
 
-export async function uploadFile(uploadUrl, file) {
+export async function uploadFile(uploadUrl: string, file: Buffer): Promise<void> {
   await axios.put(uploadUrl, file);
 }

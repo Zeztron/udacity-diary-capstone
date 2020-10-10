@@ -1,13 +1,16 @@
-import React, { PureComponent } from 'react';
+import * as React from 'react'
 import Auth from '../auth/Auth'
 import { Button } from 'semantic-ui-react'
 
+interface LogInProps {
+  auth: Auth
+}
 
-class Login extends PureComponent {
+interface LogInState {}
 
-
+export class LogIn extends React.PureComponent<LogInProps, LogInState> {
   onLogin = () => {
-    this.props.auth.login();
+    this.props.auth.login()
   }
 
   render() {
@@ -22,5 +25,3 @@ class Login extends PureComponent {
     )
   }
 }
-
-export default Login;

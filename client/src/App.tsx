@@ -1,24 +1,36 @@
-  import React, { Component } from 'react'
+import React, { Component } from 'react'
 import { Link, Route, Router, Switch } from 'react-router-dom'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
-import EditDiaryPost  from './components/EditDiaryPost'
-import Login  from './components/Login'
-import NotFound from './components/NotFound'
-import DiaryPosts from './components/DiaryPosts';
+import { EditDiaryPost } from './components/EditDiaryPost'
+import { LogIn } from './components/LogIn'
+import { NotFound } from './components/NotFound'
+import { Diary } from './components/Diary'
 
+export interface AppProps {}
 
-class App extends Component {
+export interface AppProps {
+  auth: Auth
+  history: any
+}
 
- 
-  
-  handleLogin = () => {
-    this.props.auth.login();
+export interface AppState {}
+
+export default class App extends Component<AppProps, AppState> {
+  constructor(props: AppProps) {
+    super(props)
+
+    this.handleLogin = this.handleLogin.bind(this)
+    this.handleLogout = this.handleLogout.bind(this)
   }
 
-  handleLogout = () => {
-    this.props.auth.logout();
+  handleLogin() {
+    this.props.auth.login()
+  }
+
+  handleLogout() {
+    this.props.auth.logout()
   }
 
   render() {
@@ -30,6 +42,7 @@ class App extends Component {
               <Grid.Column width={16}>
                 <Router history={this.props.history}>
                   {this.generateMenu()}
+
                   {this.generateCurrentPage()}
                 </Router>
               </Grid.Column>
@@ -70,7 +83,7 @@ class App extends Component {
 
   generateCurrentPage() {
     if (!this.props.auth.isAuthenticated()) {
-      return <Login auth={this.props.auth} />
+      return <LogIn auth={this.props.auth} />
     }
 
     return (
@@ -79,7 +92,7 @@ class App extends Component {
           path="/"
           exact
           render={props => {
-            return <DiaryPosts {...props} auth={this.props.auth} />
+            return <Diary {...props} auth={this.props.auth} />
           }}
         />
 
@@ -91,10 +104,8 @@ class App extends Component {
           }}
         />
 
-        {/* <Route component={NotFound} /> */}
+        <Route component={NotFound} />
       </Switch>
     )
   }
 }
-
-export default App;
